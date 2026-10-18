@@ -29,11 +29,11 @@ class QuestionController extends Controller
     {
         //dd($request->all()); 
 
-        $data['nama']  =$request->nama;
-        $data[email]   =$request->email;
-        $data[pertanyaan] =$request->pertanyaan;
+        $data['nama']  =$request->input('nama');
+        $data['email']   =$request->input ('email');
+        $data['pertanyaan'] =$request->input('pertanyaan');
 
-        return view('home-question-response', $data);
+        return view('home-question-respon', $data);
     
     }
 
