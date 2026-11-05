@@ -8,10 +8,6 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\UserController;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 Route::get('/home', [HomeController::class, 'index']);
 
 Route::post('question/store', [QuestionController::class, 'store'])

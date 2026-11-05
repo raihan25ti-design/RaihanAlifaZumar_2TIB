@@ -4,73 +4,59 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash; // Import Hash facade
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Menampilkan semua data user.
-     */
     public function index()
     {
-        $users = User::all(); // Terapkan User::all()
-        return view('admin.user.index', compact('users')); // Tampilkan view admin.user.index
+        $dataUser = User::all();
+        return view('admin.user.index', compact('dataUser'));
     }
 
-    /**
-     * Menampilkan form tambah user.
-     */
     public function create()
     {
-        return view('admin.user.create'); // Tampilkan view admin.user.create
+        return view('admin.user.create');
     }
 
-    /**
-     * Menyimpan data user baru ke database[cite: 1].
-     */
     public function store(Request $request)
     {
+        // Validasi data
         $request->validate([
-            'name'     => 'required|string|max:255',
+            'name'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         $data = $request->all();
-        $data['password'] = Hash::make($request->password); // Gunakan Hash::make() untuk enkripsi password[cite: 1]
+        $data['password'] = Hash::make($request->password);
 
-        User::create($data); // Terapkan User::create($data)[cite: 1]
+        User::create($data);
 
         return redirect()->route('user.index')->with('success', 'Data User berhasil ditambahkan!');
     }
 
-    /**
-     * Menampilkan form edit user berdasarkan ID[cite: 1].
-     */
     public function edit($id)
     {
-        $user = User::findOrFail($id); // Terapkan User::findOrFail($id)[cite: 1]
-        return view('admin.user.edit', compact('user')); // Tampilkan view admin.user.edit[cite: 1]
+        $dataUser = User::findOrFail($id);
+        return view('admin.user.edit', compact('dataUser'));
     }
 
-    /**
-     * Memperbarui data user.
-     */
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
+        // Validasi data pada update (password opsional / nullable)
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'name'     => 'required|string|max:100',
+            'email'    => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['name', 'email']);
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
-        } else {
-            unset($data['password']);
         }
 
         $user->update($data);
@@ -78,13 +64,10 @@ class UserController extends Controller
         return redirect()->route('user.index')->with('success', 'Data User berhasil diperbarui!');
     }
 
-    /**
-     * Menghapus data user[cite: 1].
-     */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->delete(); // Terapkan $user->delete()[cite: 1]
+        $user->delete();
 
         return redirect()->route('user.index')->with('success', 'Data User berhasil dihapus!');
     }

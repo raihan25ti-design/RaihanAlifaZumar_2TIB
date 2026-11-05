@@ -35,9 +35,9 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
-     {{--start css--}}
-     @include('layouts.admin.css')
-     {{-- end css  --}}
+    {{--start css--}}
+    @include('layouts.admin.css')
+    {{-- end css  --}}
 
 </head>
 
@@ -52,6 +52,21 @@
         {{-- end header --}}
 
         {{-- -start Main content --}}
+
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mt-3 mb-0" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-3 mb-0" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
         @yield('content')
         {{-- -end main content --}}
 
@@ -64,7 +79,7 @@
     {{-- start js  --}}
     @include('layouts.admin.js')
     {{-- end js  --}}
-    
+
 </body>
 
 </html>
